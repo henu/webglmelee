@@ -14,4 +14,8 @@ Melee.loadAssets = function()
     simple_ship.setSprite(sprites1_mat, 0, 0, 128, 128, 64, 64)
     Melee.assets['Simple ship'] = simple_ship;
 
+    var neptune = new Melee.GameObjectModel();
+    neptune.setSprite(sprites1_mat, 512, 0, 512, 512, 256, 256)
+    Melee.assets['Neptune'] = neptune;
+
 }
