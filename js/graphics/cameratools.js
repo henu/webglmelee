@@ -2,6 +2,10 @@ var Melee = Melee || {};
 
 Melee.showGameObjects = function(camera, objs, margin)
 {
+    if (objs.length == 0) {
+        return;
+    }
+
     // Get boundingbox where objects are
     var bb_min_x = objs[0].pos.x;
     var bb_max_x = objs[0].pos.x;

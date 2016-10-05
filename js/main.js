@@ -14,7 +14,9 @@ Melee.render = function()
 
     requestAnimationFrame(Melee.render);
 
-    space.run(delta);
+    space.run(delta, []);
+
+    Melee.showGameObjects(Melee.camera, [], 200);
 
     space.prepareForRendering();
 
