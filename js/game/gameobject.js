@@ -7,6 +7,7 @@ Melee.GameObject = function(model, scene, x, y, angle)
 
     this.pos = new THREE.Vector2(x, y);
     this.angle = angle;
+    this.vel = new THREE.Vector2(0, 0);
 
     this.mesh = null;
 }
@@ -16,6 +17,17 @@ Melee.GameObject.prototype.dispose = function()
     if (this.mesh) {
         this.scene.remove(this.mesh);
     }
+}
+
+Melee.GameObject.prototype.setVelocity = function(x, y)
+{
+    this.vel.set(x, y);
+}
+
+Melee.GameObject.prototype.run = function(delta)
+{
+    this.pos.x += this.vel.x * delta;
+    this.pos.y += this.vel.y * delta;
 }
 
 Melee.GameObject.prototype.prepareForRendering = function()
