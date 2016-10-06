@@ -32,6 +32,25 @@ Melee.Space.prototype.run = function(delta, important_objs)
         if (obj.y > this.size.y) obj.y -= this.size.y;
     }
 
+    // Handle collisions between all objects
+    colls = {};
+    for (var obj1_i = 0; obj1_i < this.objs.length; ++ obj1_i) {
+        var obj1 = this.objs[obj1_i];
+        if (obj1.hasShape()) {
+            for (var obj2_i = obj1_i + 1; obj2_i < this.objs.length; ++ obj2_i) {
+                var obj2 = this.objs[obj2_i];
+                if (obj2.hasShape()) {
+                    obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls);
+                }
+            }
+        }
+    }
+
+    for (var obj_i = 0; obj_i < this.objs.length; ++ obj_i) {
+        var obj = this.objs[obj_i];
+        obj.resolveCollisions();
+    }
+
     this.moveImportantObjectsCenter(important_objs);
 }
 

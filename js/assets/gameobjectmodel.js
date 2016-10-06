@@ -4,7 +4,11 @@ Melee.GameObjectModel = function()
 {
     this.mass = 0;
     this.planet = false;
+    this.shapes = [];
+    this.shapes_bounding_radius = -1;
 }
+
+Melee.GameObjectModel.SHAPE_CIRCLE = 0;
 
 Melee.GameObjectModel.prototype.setSprite = function(mat, x, y, width, height, origin_x, origin_y)
 {
@@ -14,6 +18,19 @@ Melee.GameObjectModel.prototype.setSprite = function(mat, x, y, width, height, o
     this.sprite_origin = new THREE.Vector2(origin_x, origin_y);
 
     this.geom = null;
+}
+
+Melee.GameObjectModel.prototype.addShapeCircle = function(x, y, radius)
+{
+    var new_shape = {
+        type: Melee.GameObjectModel.SHAPE_CIRCLE,
+        pos: new THREE.Vector2(x, y),
+        radius: radius,
+    }
+
+    this.shapes.push(new_shape);
+
+    this.shapes_bounding_radius = Math.max(this.shapes_bounding_radius, new_shape.pos.length() + radius);
 }
 
 Melee.GameObjectModel.prototype.createSpriteMesh = function()
