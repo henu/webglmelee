@@ -24,10 +24,28 @@ Melee.GameObject.prototype.setVelocity = function(x, y)
     this.vel.set(x, y);
 }
 
-Melee.GameObject.prototype.run = function(delta)
+Melee.GameObject.prototype.run = function(delta, space)
 {
+    if (this.model.planet) {
+        return;
+    }
+
     this.pos.x += this.vel.x * delta;
     this.pos.y += this.vel.y * delta;
+
+    for (var planet_i = 0; planet_i < space.planets.length; ++ planet_i) {
+        var planet = space.planets[planet_i];
+
+        var diff = space.getDiff(this.pos, planet.pos);
+        var diff_len_to_2 = diff.lengthSq();
+        diff.normalize();
+
+        var force = 50 * (this.model.mass * planet.model.mass) / diff_len_to_2;
+
+        this.vel.x += diff.x * force * delta;
+        this.vel.y += diff.y * force * delta;
+
+    }
 }
 
 Melee.GameObject.prototype.prepareForRendering = function()

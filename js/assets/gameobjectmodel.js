@@ -2,6 +2,8 @@ var Melee = Melee || {};
 
 Melee.GameObjectModel = function()
 {
+    this.mass = 0;
+    this.planet = false;
 }
 
 Melee.GameObjectModel.prototype.setSprite = function(mat, x, y, width, height, origin_x, origin_y)

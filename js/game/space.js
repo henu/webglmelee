@@ -5,11 +5,15 @@ Melee.Space = function(width, height)
     this.size = new THREE.Vector2(width, height);
 
     this.objs = [];
+    this.planets = [];
 }
 
 Melee.Space.prototype.addGameObject = function(obj)
 {
     this.objs.push(obj);
+    if (obj.model.planet) {
+        this.planets.push(obj);
+    }
 }
 
 // Important objects are those, that should be kept at the center of the
@@ -20,7 +24,7 @@ Melee.Space.prototype.run = function(delta, important_objs)
 {
     for (var obj_i = 0; obj_i < this.objs.length; ++ obj_i) {
         var obj = this.objs[obj_i];
-        obj.run(delta);
+        obj.run(delta, this);
 
         if (obj.x < 0) obj.x += this.size.x;
         if (obj.x > this.size.x) obj.x -= this.size.x;
@@ -86,3 +90,17 @@ Melee.Space.prototype.moveImportantObjectsCenter = function(important_objs)
         }
     }
 }
+
+Melee.Space.prototype.getDiff = function(origin, to)
+{
+    var diff_x = to.x - origin.x;
+    var diff_y = to.y - origin.y;
+    if (diff_x > this.size.x / 2) diff_x -= this.size.x;
+    if (diff_x < -this.size.x / 2) diff_x += this.size.x;
+    if (diff_y > this.size.y / 2) diff_y -= this.size.y;
+    if (diff_y < -this.size.y / 2) diff_y += this.size.y;
+
+    Melee.Space.getDiffResult.set(diff_x, diff_y);
+    return Melee.Space.getDiffResult;
+}
+Melee.Space.getDiffResult = new THREE.Vector2();
