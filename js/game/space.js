@@ -22,14 +22,20 @@ Melee.Space.prototype.addGameObject = function(obj)
 // from other ends. The maximum number of important objects is two.
 Melee.Space.prototype.run = function(delta, important_objs)
 {
-    for (var obj_i = 0; obj_i < this.objs.length; ++ obj_i) {
+    for (var obj_i = 0; obj_i < this.objs.length;) {
         var obj = this.objs[obj_i];
-        obj.run(delta, this);
+        if (!obj.run(delta, this)) {
+            obj.dispose();
+            this.objs.splice(obj_i, 1);
+            continue;
+        }
 
         if (obj.x < 0) obj.x += this.size.x;
         if (obj.x > this.size.x) obj.x -= this.size.x;
         if (obj.y < 0) obj.y += this.size.y;
         if (obj.y > this.size.y) obj.y -= this.size.y;
+
+        ++ obj_i;
     }
 
     // Handle collisions between all objects

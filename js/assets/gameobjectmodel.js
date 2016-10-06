@@ -4,8 +4,10 @@ Melee.GameObjectModel = function()
 {
     this.mass = 0;
     this.planet = false;
+
     this.shapes = [];
     this.shapes_bounding_radius = -1;
+
     this.rot_speed = 0;
     this.thrust = 0;
     this.max_velocity_by_thrust = 1000;
@@ -13,12 +15,13 @@ Melee.GameObjectModel = function()
 
 Melee.GameObjectModel.SHAPE_CIRCLE = 0;
 
-Melee.GameObjectModel.prototype.setSprite = function(mat, x, y, width, height, origin_x, origin_y)
+Melee.GameObjectModel.prototype.setSprite = function(mat, x, y, width, height, origin_x, origin_y, colored)
 {
     this.sprite_mat = mat;
     this.sprite_pos = new THREE.Vector2(x, y);
     this.sprite_size = new THREE.Vector2(width, height);
     this.sprite_origin = new THREE.Vector2(origin_x, origin_y);
+    this.sprite_colored = colored;
 
     this.geom = null;
 }
@@ -81,7 +84,11 @@ Melee.GameObjectModel.prototype.createSpriteMesh = function()
         );
     }
 
-    var mesh = new THREE.Mesh(this.sprite_geom, this.sprite_mat);
+    if (this.sprite_colored) {
+        var mesh = new THREE.Mesh(this.sprite_geom, this.sprite_mat.clone());
+    } else {
+        var mesh = new THREE.Mesh(this.sprite_geom, this.sprite_mat);
+    }
     mesh.matrixAutoUpdate = false;
 
     return mesh;

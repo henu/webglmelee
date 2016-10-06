@@ -31,7 +31,7 @@ Melee.GameObject.prototype.setVelocity = function(x, y)
     this.vel.set(x, y);
 }
 
-Melee.GameObject.prototype.control = function(delta, left, right, up)
+Melee.GameObject.prototype.control = function(delta, left, right, up, space)
 {
     if (left && !right) {
         this.angle += delta * this.model.rot_speed;
@@ -46,38 +46,52 @@ Melee.GameObject.prototype.control = function(delta, left, right, up)
             this.vel.normalize();
             this.vel.multiplyScalar(max_vel);
         }
+
+        // Emit some fire
+        if (!this.fire_emitted || this.fire_emitted < 0) {
+            var dot_pos = Melee.GameObject.tmp_v2_1;
+            this.getRelativePositionInWorldSpace(dot_pos, 0, -60);
+            var dot = new Melee.GameObject(Melee.assets['Fire dot'], Melee.scene, dot_pos.x, dot_pos.y, 0);
+            space.addGameObject(dot);
+            this.fire_emitted = 0.025;
+        } else {
+            this.fire_emitted -= delta;
+        }
     }
 }
 
 Melee.GameObject.prototype.run = function(delta, space)
 {
-    if (this.model.planet) {
-        return;
+    if (!this.model.planet) {
+        // Limit velocity if it gets too fast
+        var MAX_VELOCITY = 6000;
+        if (this.vel.lengthSq() > MAX_VELOCITY*MAX_VELOCITY) {
+            this.vel.normalize();
+            this.vel.multiplyScalar(MAX_VELOCITY);
+        }
+
+        this.pos.x += this.vel.x * delta;
+        this.pos.y += this.vel.y * delta;
+
+        for (var planet_i = 0; planet_i < space.planets.length; ++ planet_i) {
+            var planet = space.planets[planet_i];
+
+            var diff = space.getDiff(this.pos, planet.pos);
+            var diff_len_to_2 = diff.lengthSq();
+            diff.normalize();
+
+            var force = 50 * (this.model.mass * planet.model.mass) / diff_len_to_2;
+
+            this.vel.x += diff.x * force * delta;
+            this.vel.y += diff.y * force * delta;
+        }
+
+        if (this.model.postRun) {
+            return this.model.postRun(this, delta, space);
+        }
     }
 
-    // Limit velocity if it gets too fast
-    var MAX_VELOCITY = 6000;
-    if (this.vel.lengthSq() > MAX_VELOCITY*MAX_VELOCITY) {
-        this.vel.normalize();
-        this.vel.multiplyScalar(MAX_VELOCITY);
-    }
-
-    this.pos.x += this.vel.x * delta;
-    this.pos.y += this.vel.y * delta;
-
-    for (var planet_i = 0; planet_i < space.planets.length; ++ planet_i) {
-        var planet = space.planets[planet_i];
-
-        var diff = space.getDiff(this.pos, planet.pos);
-        var diff_len_to_2 = diff.lengthSq();
-        diff.normalize();
-
-        var force = 50 * (this.model.mass * planet.model.mass) / diff_len_to_2;
-
-        this.vel.x += diff.x * force * delta;
-        this.vel.y += diff.y * force * delta;
-
-    }
+    return true;
 }
 
 Melee.GameObject.prototype.prepareForRendering = function()
@@ -129,8 +143,8 @@ Melee.GameObject.prototype.addCollisionsWith = function(obj, this_i, obj_i)
 
             // Circle and circle
             if (shape1.type == Melee.GameObjectModel.SHAPE_CIRCLE && shape2.type == Melee.GameObjectModel.SHAPE_CIRCLE) {
-                this.getRelativePositionInWorldSpace(tmp_pos1, shape1.pos);
-                obj.getRelativePositionInWorldSpace(tmp_pos2, shape2.pos);
+                this.getRelativePositionInWorldSpace(tmp_pos1, shape1.pos.x, shape1.pos.y);
+                obj.getRelativePositionInWorldSpace(tmp_pos2, shape2.pos.x, shape2.pos.y);
 
                 var s_diff_x = tmp_pos2.x - tmp_pos1.x;
                 var s_diff_y = tmp_pos2.y - tmp_pos1.y;
@@ -200,12 +214,12 @@ Melee.GameObject.prototype.resolveCollisions = function()
     }
 }
 
-Melee.GameObject.prototype.getRelativePositionInWorldSpace = function(result, pos)
+Melee.GameObject.prototype.getRelativePositionInWorldSpace = function(result, pos_x, pos_y)
 {
     var s = Math.sin(this.angle);
     var c = Math.cos(this.angle);
-    result.x = this.pos.x + c * pos.x - s * pos.y;
-    result.y = this.pos.y + c * pos.y + s * pos.x;
+    result.x = this.pos.x + c * pos_x - s * pos_y;
+    result.y = this.pos.y + c * pos_y + s * pos_x;
 }
 
 Melee.GameObject.tmp_v2_1 = new THREE.Vector2();
