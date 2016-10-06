@@ -30,10 +30,10 @@ Melee.Space.prototype.run = function(delta, important_objs)
             continue;
         }
 
-        if (obj.x < 0) obj.x += this.size.x;
-        if (obj.x > this.size.x) obj.x -= this.size.x;
-        if (obj.y < 0) obj.y += this.size.y;
-        if (obj.y > this.size.y) obj.y -= this.size.y;
+        if (obj.pos.x < 0) obj.pos.x += this.size.x;
+        if (obj.pos.x > this.size.x) obj.pos.x -= this.size.x;
+        if (obj.pos.y < 0) obj.pos.y += this.size.y;
+        if (obj.pos.y > this.size.y) obj.pos.y -= this.size.y;
 
         ++ obj_i;
     }
