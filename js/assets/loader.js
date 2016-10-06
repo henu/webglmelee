@@ -14,6 +14,9 @@ Melee.loadAssets = function()
     simple_ship.setSprite(sprites1_mat, 0, 0, 128, 128, 64, 64)
     simple_ship.mass = 100;
     simple_ship.addShapeCircle(0, 0, 47);
+    simple_ship.rot_speed = 180 / 180 * Math.PI;
+    simple_ship.thrust = 4000;
+    simple_ship.max_velocity_by_thrust = 2000;
     Melee.assets['Simple ship'] = simple_ship;
 
     var neptune = new Melee.GameObjectModel();
@@ -22,5 +25,4 @@ Melee.loadAssets = function()
     neptune.planet = true;
     neptune.addShapeCircle(0, 0, 256);
     Melee.assets['Neptune'] = neptune;
-
 }

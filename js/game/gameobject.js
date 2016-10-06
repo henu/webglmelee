@@ -31,10 +31,35 @@ Melee.GameObject.prototype.setVelocity = function(x, y)
     this.vel.set(x, y);
 }
 
+Melee.GameObject.prototype.control = function(delta, left, right, up)
+{
+    if (left && !right) {
+        this.angle += delta * this.model.rot_speed;
+    } else if (!left && right) {
+        this.angle -= delta * this.model.rot_speed;
+    }
+    if (up) {
+        var max_vel = Math.max(this.vel.length(), this.model.max_velocity_by_thrust);
+        this.vel.x += delta * this.model.thrust * -Math.sin(this.angle);
+        this.vel.y += delta * this.model.thrust * Math.cos(this.angle);
+        if (this.vel.length() > max_vel) {
+            this.vel.normalize();
+            this.vel.multiplyScalar(max_vel);
+        }
+    }
+}
+
 Melee.GameObject.prototype.run = function(delta, space)
 {
     if (this.model.planet) {
         return;
+    }
+
+    // Limit velocity if it gets too fast
+    var MAX_VELOCITY = 6000;
+    if (this.vel.lengthSq() > MAX_VELOCITY*MAX_VELOCITY) {
+        this.vel.normalize();
+        this.vel.multiplyScalar(MAX_VELOCITY);
     }
 
     this.pos.x += this.vel.x * delta;

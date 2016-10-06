@@ -6,6 +6,9 @@ Melee.GameObjectModel = function()
     this.planet = false;
     this.shapes = [];
     this.shapes_bounding_radius = -1;
+    this.rot_speed = 0;
+    this.thrust = 0;
+    this.max_velocity_by_thrust = 1000;
 }
 
 Melee.GameObjectModel.SHAPE_CIRCLE = 0;

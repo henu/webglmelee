@@ -26,6 +26,9 @@ Melee.render = function()
 
     space.run(delta, ships);
 
+    ship1.control(delta, Melee.keyboard[37], Melee.keyboard[39], Melee.keyboard[38]);
+    ship2.control(delta, Melee.keyboard[65], Melee.keyboard[68], Melee.keyboard[87]);
+
     Melee.showGameObjects(Melee.camera, ships, 200);
 
     space.prepareForRendering();
