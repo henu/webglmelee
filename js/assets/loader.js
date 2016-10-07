@@ -16,8 +16,21 @@ Melee.loadAssets = function()
     small_ship.addShapeCircle(0, 4, 24);
     small_ship.rot_speed = 180 / 180 * Math.PI;
     small_ship.thrust = 4000;
-    small_ship.max_velocity_by_thrust = 1300;
+    small_ship.max_velocity_by_thrust = 1100;
     small_ship.engine_y = -20;
+    small_ship.weapon1 = {
+        cooldown: 1/10,
+        shoot: function(obj, space) {
+            var s = Math.sin(obj.angle);
+            var c = Math.cos(obj.angle);
+            var pos_x = obj.pos.x - s * 50;
+            var pos_y = obj.pos.y + c * 50;
+            var projectile = new Melee.GameObject(Melee.assets['Bullet'], Melee.scene, pos_x, pos_y, 0);
+            var SPEED = 1600;
+            projectile.setVelocity(obj.vel.x - s * SPEED, obj.vel.y + c * SPEED);
+            space.addGameObject(projectile);
+        }
+    };
     Melee.assets['Small ship'] = small_ship;
 
     var neptune = new Melee.GameObjectModel();
@@ -48,4 +61,18 @@ Melee.loadAssets = function()
         return true;
     }
     Melee.assets['Fire dot'] = fire_dot;
+
+    var bullet = new Melee.GameObjectModel();
+    bullet.setSprite(sprites1_mat, 56, 16, 8, 32, 4, 4)
+    bullet.mass = 20;
+    bullet.addShapeCircle(0, 0, 8);
+    bullet.rotate_by_velocity = true;
+    bullet.postRun = function(obj, delta, space)
+    {
+        if (!obj.age) obj.age = 0;
+        obj.age += delta;
+        return obj.age < 1;
+    }
+    Melee.assets['Bullet'] = bullet;
+
 }

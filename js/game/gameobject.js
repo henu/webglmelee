@@ -12,6 +12,11 @@ Melee.GameObject = function(model, scene, x, y, angle)
     this.mesh = null;
 
     this.colls = [];
+
+    if (model.weapon1 || model.weapon2) {
+        this.weapon1_cooldown = 0;
+        this.weapon2_cooldown = 0;
+    }
 }
 
 Melee.GameObject.prototype.dispose = function()
@@ -31,13 +36,14 @@ Melee.GameObject.prototype.setVelocity = function(x, y)
     this.vel.set(x, y);
 }
 
-Melee.GameObject.prototype.control = function(delta, left, right, up, space)
+Melee.GameObject.prototype.control = function(delta, left, right, up, fire1, fire2, space)
 {
     if (left && !right) {
         this.angle += delta * this.model.rot_speed;
     } else if (!left && right) {
         this.angle -= delta * this.model.rot_speed;
     }
+
     if (up) {
         var max_vel = Math.max(this.vel.length(), this.model.max_velocity_by_thrust);
         this.vel.x += delta * this.model.thrust * -Math.sin(this.angle);
@@ -57,6 +63,11 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, space)
         } else {
             this.fire_emitted -= delta;
         }
+    }
+
+    if (fire1 && this.weapon1_cooldown <= 0) {
+        this.model.weapon1.shoot(this, space);
+        this.weapon1_cooldown = this.model.weapon1.cooldown;
     }
 }
 
@@ -86,6 +97,11 @@ Melee.GameObject.prototype.run = function(delta, space)
             this.vel.y += diff.y * force * delta;
         }
 
+        if (this.model.weapon1) {
+            this.weapon1_cooldown -= delta;
+            this.weapon2_cooldown -= delta;
+        }
+
         if (this.model.postRun) {
             return this.model.postRun(this, delta, space);
         }
@@ -100,6 +116,10 @@ Melee.GameObject.prototype.prepareForRendering = function()
         this.mesh = this.model.createSpriteMesh();
         if (!this.mesh) return;
         this.scene.add(this.mesh);
+    }
+
+    if (this.model.rotate_by_velocity) {
+        this.angle = this.vel.angle() - 90 / 180 * Math.PI;
     }
 
     // First make the origin center of sprite
