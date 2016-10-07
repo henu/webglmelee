@@ -18,6 +18,8 @@ Melee.loadAssets = function()
     small_ship.thrust = 4000;
     small_ship.max_velocity_by_thrust = 1100;
     small_ship.engine_y = -20;
+    small_ship.hp = 12;
+    small_ship.batt = 16;
     small_ship.weapon1 = {
         cooldown: 1/10,
         shoot: function(obj, space) {

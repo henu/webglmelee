@@ -20,6 +20,8 @@ var clock = new THREE.Clock();
 
 var background = new Melee.Background();
 
+var gui = new Melee.GUI(ship1, ship2);
+
 Melee.render = function()
 {
     var delta = Math.min(clock.getDelta(), 1 / 10);
@@ -35,11 +37,12 @@ Melee.render = function()
 
     space.prepareForRendering();
 
-    // Render background and then game objects
+    // Render background, game objects and GUI
     Melee.renderer.autoClear = true;
     background.render(Melee.renderer);
     Melee.renderer.autoClear = false;
     Melee.renderer.render(Melee.scene, Melee.camera);
+    gui.render(Melee.renderer);
 }
 
 Melee.render();

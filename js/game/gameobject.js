@@ -17,6 +17,11 @@ Melee.GameObject = function(model, scene, x, y, angle)
         this.weapon1_cooldown = 0;
         this.weapon2_cooldown = 0;
     }
+
+    if (model.hp || model.batt) {
+        this.hp = model.hp;
+        this.batt = model.batt;
+    }
 }
 
 Melee.GameObject.prototype.dispose = function()
