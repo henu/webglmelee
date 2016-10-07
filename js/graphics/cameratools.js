@@ -1,6 +1,6 @@
 var Melee = Melee || {};
 
-Melee.showGameObjects = function(camera, objs, margin)
+Melee.showGameObjects = function(camera, objs, margin, background)
 {
     if (objs.length == 0) {
         return;
@@ -28,8 +28,11 @@ Melee.showGameObjects = function(camera, objs, margin)
     var bb_height = bb_max_y - bb_min_y;
 
     // Pan to center of boundingbox
-    camera.position.x = (bb_min_x + bb_max_x) / 2;
-    camera.position.y = (bb_min_y + bb_max_y) / 2;
+    var pan_x = (bb_min_x + bb_max_x) / 2 - camera.position.x;
+    var pan_y = (bb_min_y + bb_max_y) / 2 - camera.position.y;
+    camera.position.x += pan_x;
+    camera.position.y += pan_y;
+    background.panorate(-pan_x, -pan_y);
 
     // Calculate scaling that will show all the objects
     // Limit scaling, so it doesn't get too close

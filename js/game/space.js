@@ -20,7 +20,7 @@ Melee.Space.prototype.addGameObject = function(obj)
 // space and as close to each others as possible. They are moved closer
 // to each others by translating the whole space, so the objects wrap
 // from other ends. The maximum number of important objects is two.
-Melee.Space.prototype.run = function(delta, important_objs)
+Melee.Space.prototype.run = function(delta, important_objs, background)
 {
     for (var obj_i = 0; obj_i < this.objs.length;) {
         var obj = this.objs[obj_i];
@@ -57,7 +57,7 @@ Melee.Space.prototype.run = function(delta, important_objs)
         obj.resolveCollisions();
     }
 
-    this.moveImportantObjectsCenter(important_objs);
+    this.moveImportantObjectsCenter(important_objs, background);
 }
 
 Melee.Space.prototype.prepareForRendering = function()
@@ -68,7 +68,7 @@ Melee.Space.prototype.prepareForRendering = function()
     }
 }
 
-Melee.Space.prototype.moveImportantObjectsCenter = function(important_objs)
+Melee.Space.prototype.moveImportantObjectsCenter = function(important_objs, background)
 {
     if (important_objs.length == 0) {
         return;
@@ -113,6 +113,7 @@ Melee.Space.prototype.moveImportantObjectsCenter = function(important_objs)
             obj.pos.x = (this.size.x + obj.pos.x + transl_x) % this.size.x;
             obj.pos.y = (this.size.y + obj.pos.y + transl_y) % this.size.y;
         }
+        background.panorate(transl_x, transl_y);
     }
 }
 
