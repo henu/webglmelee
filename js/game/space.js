@@ -24,7 +24,9 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
 {
     for (var obj_i = 0; obj_i < this.objs.length;) {
         var obj = this.objs[obj_i];
-        if (!obj.run(delta, this)) {
+        obj.run(delta, this);
+
+        if (!obj.alive) {
             obj.dispose();
             this.objs.splice(obj_i, 1);
             continue;
@@ -42,21 +44,37 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
     colls = {};
     for (var obj1_i = 0; obj1_i < this.objs.length; ++ obj1_i) {
         var obj1 = this.objs[obj1_i];
-        if (obj1.hasShape()) {
-            for (var obj2_i = obj1_i + 1; obj2_i < this.objs.length; ++ obj2_i) {
+        if (obj1.alive && obj1.hasShape()) {
+            for (var obj2_i = obj1_i + 1; obj2_i < this.objs.length && obj1.alive; ++ obj2_i) {
                 var obj2 = this.objs[obj2_i];
-                if (obj2.hasShape()) {
-                    if (!obj1.model.dont_bounce && !obj2.model.dont_bounce) {
-                        obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls);
+                if (obj2.alive && obj2.hasShape()) {
+                    if (obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls)) {
+                        // Call collision callbacks
+                        if (obj1.model.onCollision) {
+                            obj1.model.onCollision(obj1, obj2);
+                        }
+                        if (obj2.model.onCollision) {
+                            obj2.model.onCollision(obj2, obj1);
+                        }
                     }
                 }
             }
         }
     }
 
-    for (var obj_i = 0; obj_i < this.objs.length; ++ obj_i) {
+    // Resolve collisions and clean died objects
+    for (var obj_i = 0; obj_i < this.objs.length;) {
         var obj = this.objs[obj_i];
+
+        if (!obj.alive) {
+            obj.dispose();
+            this.objs.splice(obj_i, 1);
+            continue;
+        }
+
         obj.resolveCollisions();
+
+        ++ obj_i;
     }
 
     this.moveImportantObjectsCenter(important_objs, background);

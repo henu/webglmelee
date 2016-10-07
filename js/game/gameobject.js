@@ -4,6 +4,7 @@ Melee.GameObject = function(model, scene, x, y, angle)
 {
     this.model = model;
     this.scene = scene;
+    this.alive = true;
 
     this.pos = new THREE.Vector2(x, y);
     this.angle = angle;
@@ -84,8 +85,6 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, fire1, fir
 
 Melee.GameObject.prototype.run = function(delta, space)
 {
-    var keep_alive = true;
-
     if (!this.model.planet) {
         // Limit velocity if it gets too fast
         var MAX_VELOCITY = 6000;
@@ -124,20 +123,16 @@ Melee.GameObject.prototype.run = function(delta, space)
         }
 
         if (this.model.postRun) {
-            if (!this.model.postRun(this, delta, space)) {
-                keep_alive = false;
-            }
+            this.model.postRun(this, delta, space);
         }
 
         if (this.model.life_time) {
             this.age += delta;
             if (this.age >= this.model.life_time) {
-                keep_alive = false;
+                this.alive = false;
             }
         }
     }
-
-    return keep_alive;
 }
 
 Melee.GameObject.prototype.prepareForRendering = function()
@@ -169,6 +164,7 @@ Melee.GameObject.prototype.prepareForRendering = function()
     this.mesh.matrix.premultiply(matrix_translate);
 }
 
+// Returns true if there was a real collision
 Melee.GameObject.prototype.addCollisionsWith = function(obj, this_i, obj_i)
 {
     var EXTRA_MARGIN = 0;
@@ -182,10 +178,11 @@ Melee.GameObject.prototype.addCollisionsWith = function(obj, this_i, obj_i)
     var dst_to_2 = diff_x*diff_x + diff_y*diff_y;
     var bs_r_total = EXTRA_MARGIN + this.model.shapes_bounding_radius + obj.model.shapes_bounding_radius;
     if (dst_to_2 > bs_r_total * bs_r_total) {
-        return;
+        return false;
     }
 
     // Go all collision shapes through, and get collisions that are inside extra margin
+    var real_collision_found = false;
     for (var shape1_i = 0; shape1_i < this.model.shapes.length; ++ shape1_i) {
         var shape1 = this.model.shapes[shape1_i];
         for (var shape2_i = 0; shape2_i < obj.model.shapes.length; ++ shape2_i) {
@@ -220,25 +217,33 @@ Melee.GameObject.prototype.addCollisionsWith = function(obj, this_i, obj_i)
                     }
 
                     if (!this.model.planet) {
-                        this.addCollision({
-                            depth: total_depth,
-                            normal_x: -s_diff_x,
-                            normal_y: -s_diff_y,
-                            velocity: vel1
-                        });
+                        if (!this.model.dont_bounce && !obj.model.dont_bounce) {
+                            this.addCollision({
+                                depth: total_depth,
+                                normal_x: -s_diff_x,
+                                normal_y: -s_diff_y,
+                                velocity: vel1
+                            });
+                        }
+                        if (total_depth > 0) real_collision_found = true;
                     }
                     if (!obj.model.planet) {
-                        obj.addCollision({
-                            depth: total_depth,
-                            normal_x: s_diff_x,
-                            normal_y: s_diff_y,
-                            velocity: vel2
-                        });
+                        if (!this.model.dont_bounce && !obj.model.dont_bounce) {
+                            obj.addCollision({
+                                depth: total_depth,
+                                normal_x: s_diff_x,
+                                normal_y: s_diff_y,
+                                velocity: vel2
+                            });
+                        }
+                        if (total_depth > 0) real_collision_found = true;
                     }
                 }
             }
         }
     }
+
+    return real_collision_found;
 }
 
 Melee.GameObject.prototype.addCollision = function(new_coll)

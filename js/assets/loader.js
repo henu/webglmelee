@@ -60,7 +60,6 @@ Melee.loadAssets = function()
             var blue = 0;
         }
         obj.mesh.material.color = new THREE.Color(red, green, blue);
-        return true;
     }
     Melee.assets['Fire dot'] = fire_dot;
 
@@ -71,6 +70,13 @@ Melee.loadAssets = function()
     bullet.rotate_by_velocity = true;
     bullet.life_time = 1;
     bullet.dont_bounce = true;
+    bullet.onCollision = function(obj1, obj2)
+    {
+        if (obj2.model.hp) {
+            -- obj2.hp;
+        }
+        obj1.alive = false;
+    }
     Melee.assets['Bullet'] = bullet;
 
 }
