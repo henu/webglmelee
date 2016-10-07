@@ -39,6 +39,7 @@ Melee.showGameObjects = function(camera, objs, margin, background)
     var scaling_x = (bb_width / window.innerWidth);
     var scaling_y = (bb_height / window.innerHeight);
     var scaling = Math.max(1, scaling_x, scaling_y);
+    background.setScaling(scaling);
 
     // Apply sclaing
     camera.left = -window.innerWidth / 2 * scaling;
