@@ -13,6 +13,10 @@ Melee.GameObject = function(model, scene, x, y, angle)
 
     this.colls = [];
 
+    if (model.life_time) {
+        this.age = 0;
+    }
+
     if (model.weapon1 || model.weapon2) {
         this.weapon1_cooldown = 0;
         this.weapon2_cooldown = 0;
@@ -80,6 +84,8 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, fire1, fir
 
 Melee.GameObject.prototype.run = function(delta, space)
 {
+    var keep_alive = true;
+
     if (!this.model.planet) {
         // Limit velocity if it gets too fast
         var MAX_VELOCITY = 6000;
@@ -118,11 +124,20 @@ Melee.GameObject.prototype.run = function(delta, space)
         }
 
         if (this.model.postRun) {
-            return this.model.postRun(this, delta, space);
+            if (!this.model.postRun(this, delta, space)) {
+                keep_alive = false;
+            }
+        }
+
+        if (this.model.life_time) {
+            this.age += delta;
+            if (this.age >= this.model.life_time) {
+                keep_alive = false;
+            }
         }
     }
 
-    return true;
+    return keep_alive;
 }
 
 Melee.GameObject.prototype.prepareForRendering = function()

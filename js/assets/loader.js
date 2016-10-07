@@ -46,9 +46,9 @@ Melee.loadAssets = function()
 
     var fire_dot = new Melee.GameObjectModel();
     fire_dot.setSprite(sprites1_mat, 56, 0, 8, 8, 4, 4, true);
+    fire_dot.life_time = 1;
     fire_dot.postRun = function(obj, delta, space)
     {
-        if (!obj.age) obj.age = 0;
         obj.age += delta;
         if (obj.age < 0.5) {
             var red = 1;
@@ -58,8 +58,6 @@ Melee.loadAssets = function()
             var red = 1;
             var green = Math.max(0, Math.min(1, 1 - (obj.age - 0.5) * 2))
             var blue = 0;
-        } else {
-            return false;
         }
         obj.mesh.material.color = new THREE.Color(red, green, blue);
         return true;
@@ -71,12 +69,7 @@ Melee.loadAssets = function()
     bullet.mass = 20;
     bullet.addShapeCircle(0, 0, 8);
     bullet.rotate_by_velocity = true;
-    bullet.postRun = function(obj, delta, space)
-    {
-        if (!obj.age) obj.age = 0;
-        obj.age += delta;
-        return obj.age < 1;
-    }
+    bullet.life_time = 1;
     Melee.assets['Bullet'] = bullet;
 
 }
