@@ -6,8 +6,8 @@ Melee.loadAssets();
 
 var space = new Melee.Space(10000, 10000);
 
-var ship1 = new Melee.GameObject(Melee.assets['Simple ship'], Melee.scene, Math.random() * space.size.x, Math.random() * space.size.y, Math.random() * Math.PI * 2);
-var ship2 = new Melee.GameObject(Melee.assets['Simple ship'], Melee.scene, Math.random() * space.size.x, Math.random() * space.size.y, Math.random() * Math.PI * 2);
+var ship1 = new Melee.GameObject(Melee.assets['Small ship'], Melee.scene, Math.random() * space.size.x, Math.random() * space.size.y, Math.random() * Math.PI * 2);
+var ship2 = new Melee.GameObject(Melee.assets['Small ship'], Melee.scene, Math.random() * space.size.x, Math.random() * space.size.y, Math.random() * Math.PI * 2);
 var planet = new Melee.GameObject(Melee.assets['Neptune'], Melee.scene, space.size.x / 2, space.size.y / 2, 0);
 
 var ships = [ship1, ship2];

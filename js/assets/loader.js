@@ -10,14 +10,14 @@ Melee.loadAssets = function()
 
     Melee.assets = {};
 
-    var simple_ship = new Melee.GameObjectModel();
-    simple_ship.setSprite(sprites1_mat, 0, 0, 128, 128, 64, 64)
-    simple_ship.mass = 100;
-    simple_ship.addShapeCircle(0, 0, 47);
-    simple_ship.rot_speed = 180 / 180 * Math.PI;
-    simple_ship.thrust = 4000;
-    simple_ship.max_velocity_by_thrust = 1300;
-    Melee.assets['Simple ship'] = simple_ship;
+    var small_ship = new Melee.GameObjectModel();
+    small_ship.setSprite(sprites1_mat, 0, 0, 48, 60, 24, 40)
+    small_ship.mass = 60;
+    small_ship.addShapeCircle(0, 4, 24);
+    small_ship.rot_speed = 180 / 180 * Math.PI;
+    small_ship.thrust = 4000;
+    small_ship.max_velocity_by_thrust = 1300;
+    Melee.assets['Small ship'] = small_ship;
 
     var neptune = new Melee.GameObjectModel();
     neptune.setSprite(sprites1_mat, 512, 0, 512, 512, 256, 256)
@@ -27,7 +27,7 @@ Melee.loadAssets = function()
     Melee.assets['Neptune'] = neptune;
 
     var fire_dot = new Melee.GameObjectModel();
-    fire_dot.setSprite(sprites1_mat, 136, 0, 8, 8, 4, 4, true);
+    fire_dot.setSprite(sprites1_mat, 56, 0, 8, 8, 4, 4, true);
     fire_dot.postRun = function(obj, delta, space)
     {
         if (!obj.age) obj.age = 0;
