@@ -10,4 +10,7 @@ window.onkeyup = function(e)
 window.onkeydown = function(e)
 {
     Melee.keyboard[e.keyCode] = true;
+
+    // Steal keyboard events, except F5 and F11
+    return e.keyCode == 116 || e.keyCode == 122;
 }
