@@ -17,6 +17,7 @@ Melee.loadAssets = function()
     small_ship.rot_speed = 180 / 180 * Math.PI;
     small_ship.thrust = 4000;
     small_ship.max_velocity_by_thrust = 1300;
+    small_ship.engine_y = -20;
     Melee.assets['Small ship'] = small_ship;
 
     var neptune = new Melee.GameObjectModel();

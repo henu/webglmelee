@@ -50,7 +50,7 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, space)
         // Emit some fire
         if (!this.fire_emitted || this.fire_emitted < 0) {
             var dot_pos = Melee.GameObject.tmp_v2_1;
-            this.getRelativePositionInWorldSpace(dot_pos, 0, -60);
+            this.getRelativePositionInWorldSpace(dot_pos, 0, this.model.engine_y);
             var dot = new Melee.GameObject(Melee.assets['Fire dot'], Melee.scene, dot_pos.x, dot_pos.y, 0);
             space.addGameObject(dot);
             this.fire_emitted = 0.025;
