@@ -41,6 +41,25 @@ Melee.showGameObjects = function(camera, objs, margin, background)
     var scaling = Math.max(1, scaling_x, scaling_y);
     background.setScaling(scaling);
 
+    // Apply scaling
+    camera.left = -window.innerWidth / 2 * scaling;
+    camera.right = window.innerWidth / 2 * scaling;
+    camera.top = window.innerHeight / 2 * scaling;
+    camera.bottom = -window.innerHeight / 2 * scaling;
+    camera.updateProjectionMatrix();
+}
+
+Melee.showSpace = function(camera, space)
+{
+    // Pan to center of boundingbox
+    camera.position.x = space.size.x / 2;
+    camera.position.y = space.size.y / 2;
+
+    // Calculate scaling that will show the whole space
+    var scaling_x = (space.size.x / window.innerWidth);
+    var scaling_y = (space.size.y / window.innerHeight);
+    var scaling = Math.max(scaling_x, scaling_y);
+
     // Apply sclaing
     camera.left = -window.innerWidth / 2 * scaling;
     camera.right = window.innerWidth / 2 * scaling;
