@@ -20,8 +20,10 @@ Melee.loadAssets = function()
     small_ship.engine_y = -20;
     small_ship.hp = 12;
     small_ship.batt = 16;
+    small_ship.batt_recharge = 0.5;
     small_ship.weapon1 = {
         cooldown: 1/10,
+        batt_usage: 1,
         shoot: function(obj, space) {
             var s = Math.sin(obj.angle);
             var c = Math.cos(obj.angle);

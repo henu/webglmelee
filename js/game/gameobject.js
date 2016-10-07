@@ -21,6 +21,7 @@ Melee.GameObject = function(model, scene, x, y, angle)
     if (model.hp || model.batt) {
         this.hp = model.hp;
         this.batt = model.batt;
+        this.batt_recharging = 0;
     }
 }
 
@@ -70,9 +71,10 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, fire1, fir
         }
     }
 
-    if (fire1 && this.weapon1_cooldown <= 0) {
+    if (fire1 && this.weapon1_cooldown <= 0 && this.batt >= this.model.weapon1.batt_usage) {
         this.model.weapon1.shoot(this, space);
         this.weapon1_cooldown = this.model.weapon1.cooldown;
+        this.batt -= this.model.weapon1.batt_usage;
     }
 }
 
@@ -105,6 +107,14 @@ Melee.GameObject.prototype.run = function(delta, space)
         if (this.model.weapon1) {
             this.weapon1_cooldown -= delta;
             this.weapon2_cooldown -= delta;
+            if (this.batt < this.model.batt) {
+                if (this.batt_recharging <= 0) {
+                    ++ this.batt;
+                    this.batt_recharging = this.model.batt_recharge;
+                } else {
+                    this.batt_recharging -= delta;
+                }
+            }
         }
 
         if (this.model.postRun) {
