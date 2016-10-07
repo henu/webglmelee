@@ -80,7 +80,7 @@ Melee.GameObject.prototype.run = function(delta, space)
             var diff_len_to_2 = diff.lengthSq();
             diff.normalize();
 
-            var force = 50 * (this.model.mass * planet.model.mass) / diff_len_to_2;
+            var force = 1000 * (this.model.mass * planet.model.mass) / diff_len_to_2;
 
             this.vel.x += diff.x * force * delta;
             this.vel.y += diff.y * force * delta;
