@@ -26,9 +26,10 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
         var obj = this.objs[obj_i];
         obj.run(delta, this);
 
-        if (!obj.alive) {
+        if (!obj.alive || (obj.model.hp && obj.hp <= 0)) {
             obj.dispose();
             this.objs.splice(obj_i, 1);
+            this.removeFromImportantObjects(obj, important_objs);
             continue;
         }
 
@@ -66,9 +67,10 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
     for (var obj_i = 0; obj_i < this.objs.length;) {
         var obj = this.objs[obj_i];
 
-        if (!obj.alive) {
+        if (!obj.alive || (obj.model.hp && obj.hp <= 0)) {
             obj.dispose();
             this.objs.splice(obj_i, 1);
+            this.removeFromImportantObjects(obj, important_objs);
             continue;
         }
 
@@ -150,3 +152,11 @@ Melee.Space.prototype.getDiff = function(origin, to)
     return Melee.Space.getDiffResult;
 }
 Melee.Space.getDiffResult = new THREE.Vector2();
+
+Melee.Space.prototype.removeFromImportantObjects = function(obj, important_objs)
+{
+    var obj_i = important_objs.indexOf(obj);
+    if (obj_i > -1) {
+        important_objs.splice(obj_i, 1);
+    }
+}
