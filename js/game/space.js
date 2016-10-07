@@ -46,7 +46,9 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
             for (var obj2_i = obj1_i + 1; obj2_i < this.objs.length; ++ obj2_i) {
                 var obj2 = this.objs[obj2_i];
                 if (obj2.hasShape()) {
-                    obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls);
+                    if (!obj1.model.dont_bounce && !obj2.model.dont_bounce) {
+                        obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls);
+                    }
                 }
             }
         }

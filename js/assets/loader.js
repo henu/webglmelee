@@ -70,6 +70,7 @@ Melee.loadAssets = function()
     bullet.addShapeCircle(0, 0, 8);
     bullet.rotate_by_velocity = true;
     bullet.life_time = 1;
+    bullet.dont_bounce = true;
     Melee.assets['Bullet'] = bullet;
 
 }
