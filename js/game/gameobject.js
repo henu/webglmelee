@@ -81,6 +81,12 @@ Melee.GameObject.prototype.control = function(delta, left, right, up, fire1, fir
         this.weapon1_cooldown = this.model.weapon1.cooldown;
         this.batt -= this.model.weapon1.batt_usage;
     }
+
+    if (fire2 && this.weapon2_cooldown <= 0 && this.batt >= this.model.weapon2.batt_usage) {
+        this.model.weapon2.shoot(this, space);
+        this.weapon2_cooldown = this.model.weapon2.cooldown;
+        this.batt -= this.model.weapon2.batt_usage;
+    }
 }
 
 Melee.GameObject.prototype.run = function(delta, space)

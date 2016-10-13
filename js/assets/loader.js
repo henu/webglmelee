@@ -35,6 +35,31 @@ Melee.loadAssets = function()
             space.addGameObject(projectile);
         }
     };
+    small_ship.weapon2 = {
+        cooldown: 1/5,
+        batt_usage: 6,
+        shoot: function(obj, space) {
+            var s = Math.sin(obj.angle);
+            var c = Math.cos(obj.angle);
+            var pos_x = obj.pos.x - s * 50;
+            var pos_y = obj.pos.y + c * 50;
+            var SPEED = 300;
+            var mine1 = new Melee.GameObject(Melee.assets['Mine'], Melee.scene, obj.pos.x, obj.pos.y, obj.angle);
+            mine1.setVelocity(
+                obj.vel.x + c * SPEED,
+                obj.vel.y + s * SPEED
+            );
+            mine1.owner = obj;
+            space.addGameObject(mine1);
+            var mine2 = new Melee.GameObject(Melee.assets['Mine'], Melee.scene, obj.pos.x, obj.pos.y, obj.angle);
+            mine2.setVelocity(
+                obj.vel.x - c * SPEED,
+                obj.vel.y - s * SPEED
+            );
+            mine2.owner = obj;
+            space.addGameObject(mine2);
+        }
+    };
     Melee.assets['Small ship'] = small_ship;
 
     var neptune = new Melee.GameObjectModel();
@@ -90,4 +115,34 @@ Melee.loadAssets = function()
     bullet_explosion.life_time = 0.3;
     bullet_explosion.dont_bounce = true;
     Melee.assets['Bullet explosion'] = bullet_explosion;
+
+    var mine = new Melee.GameObjectModel();
+    mine.addSprite(sprites1_mat, 56, 56, 24, 24, 12, 12)
+    mine.mass = 30;
+    mine.addShapeCircle(0, 0, 11);
+    mine.life_time = 10;
+    mine.dont_bounce = true;
+    mine.onCollision = function(obj1, obj2, space)
+    {
+        // Do not collide with owner right after spawn
+        if (obj1.owner == obj2 && obj1.age < 0.6) {
+            return;
+        }
+        // Do not collide with other mines that are very young
+        if (obj1.model == obj2.model && obj1.age < 0.2 && obj2.age < 0.2) {
+            return;
+        }
+        if (obj2.model.hp) {
+            obj2.hp -= 8;
+        }
+        obj1.alive = false;
+
+        var explosion = new Melee.GameObject(Melee.assets['Bullet explosion'], Melee.scene, obj1.pos.x, obj1.pos.y, Math.PI * 2 * Math.random());
+        space.addGameObject(explosion);
+    }
+    mine.postRun = function(obj, delta, space)
+    {
+        obj.vel.multiplyScalar(0.975);
+    }
+    Melee.assets['Mine'] = mine;
 }
