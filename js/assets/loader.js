@@ -77,7 +77,17 @@ Melee.loadAssets = function()
             -- obj2.hp;
         }
         obj1.alive = false;
+
+        var explosion = new Melee.GameObject(Melee.assets['Bullet explosion'], Melee.scene, obj1.pos.x, obj1.pos.y, Math.PI * 2 * Math.random());
+        space.addGameObject(explosion);
     }
     Melee.assets['Bullet'] = bullet;
 
+    var bullet_explosion = new Melee.GameObjectModel();
+    bullet_explosion.addSprite(sprites1_mat, 72, 0, 48, 48, 24, 24, 0.1)
+    bullet_explosion.addSprite(sprites1_mat, 120, 0, 48, 48, 24, 24, 0.1)
+    bullet_explosion.addSprite(sprites1_mat, 168, 0, 48, 48, 24, 24, 1)
+    bullet_explosion.life_time = 0.3;
+    bullet_explosion.dont_bounce = true;
+    Melee.assets['Bullet explosion'] = bullet_explosion;
 }
