@@ -52,10 +52,10 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
                     if (obj1.addCollisionsWith(obj2, obj1_i, obj2_i, colls)) {
                         // Call collision callbacks
                         if (obj1.model.onCollision) {
-                            obj1.model.onCollision(obj1, obj2);
+                            obj1.model.onCollision(obj1, obj2, this);
                         }
                         if (obj2.model.onCollision) {
-                            obj2.model.onCollision(obj2, obj1);
+                            obj2.model.onCollision(obj2, obj1, this);
                         }
                     }
                 }

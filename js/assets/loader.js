@@ -71,7 +71,7 @@ Melee.loadAssets = function()
     bullet.rotate_by_velocity = true;
     bullet.life_time = 1;
     bullet.dont_bounce = true;
-    bullet.onCollision = function(obj1, obj2)
+    bullet.onCollision = function(obj1, obj2, space)
     {
         if (obj2.model.hp) {
             -- obj2.hp;
