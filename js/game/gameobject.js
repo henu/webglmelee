@@ -10,7 +10,7 @@ Melee.GameObject = function(model, scene, x, y, angle)
     this.angle = angle;
     this.vel = new THREE.Vector2(0, 0);
 
-    this.mesh = null;
+    this.meshes = null;
 
     this.colls = [];
 
@@ -32,8 +32,8 @@ Melee.GameObject = function(model, scene, x, y, angle)
 
 Melee.GameObject.prototype.dispose = function()
 {
-    if (this.mesh) {
-        this.scene.remove(this.mesh);
+    if (this.meshes) {
+        this.scene.remove(this.meshes[this.frame]);
     }
 }
 
@@ -135,12 +135,30 @@ Melee.GameObject.prototype.run = function(delta, space)
     }
 }
 
-Melee.GameObject.prototype.prepareForRendering = function()
+Melee.GameObject.prototype.prepareForRendering = function(delta)
 {
-    if (this.mesh == null) {
-        this.mesh = this.model.createSpriteMesh();
-        if (!this.mesh) return;
-        this.scene.add(this.mesh);
+    if (!this.meshes) {
+        this.meshes = this.model.createSpriteMeshes();
+        if (!this.meshes) return;
+        this.frame = 0;
+        this.frame_age = 0;
+        this.scene.add(this.meshes[0]);
+    }
+
+    // Advance possible animation
+    if (this.model.sprites.length > 1) {
+        var current_frame_duration = this.model.sprites[this.frame].duration;
+        if (this.frame_age >= current_frame_duration) {
+            this.frame_age -= current_frame_duration;
+            this.scene.remove(this.meshes[this.frame]);
+            this.frame = (this.frame + 1) % this.model.sprites.length;
+            this.scene.add(this.meshes[this.frame]);
+        }
+        this.frame_age += delta;
+    }
+
+    if (this.model.sprite_colored && this.sprite_color) {
+        this.meshes[this.frame].material.color = this.sprite_color;
     }
 
     if (this.model.rotate_by_velocity) {
@@ -148,20 +166,20 @@ Melee.GameObject.prototype.prepareForRendering = function()
     }
 
     // First make the origin center of sprite
-    var origin = this.model.sprite_origin;
-    var width = this.model.sprite_size.x;
-    var height = this.model.sprite_size.y;
-    this.mesh.matrix.makeTranslation(width / 2 - origin.x, -height / 2 + origin.y, 0);
+    var origin = this.model.sprites[this.frame].origin;
+    var width = this.model.sprites[this.frame].size.x;
+    var height = this.model.sprites[this.frame].size.y;
+    this.meshes[this.frame].matrix.makeTranslation(width / 2 - origin.x, -height / 2 + origin.y, 0);
 
     // Rotate
     var matrix_rotate = new THREE.Matrix4();
     matrix_rotate.makeRotationZ(this.angle);
-    this.mesh.matrix.premultiply(matrix_rotate);
+    this.meshes[this.frame].matrix.premultiply(matrix_rotate);
 
     // Move to correct position
     var matrix_translate = new THREE.Matrix4();
     matrix_translate.makeTranslation(this.pos.x, this.pos.y, 0);
-    this.mesh.matrix.premultiply(matrix_translate);
+    this.meshes[this.frame].matrix.premultiply(matrix_translate);
 }
 
 // Returns true if there was a real collision

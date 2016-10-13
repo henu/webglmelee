@@ -11,7 +11,7 @@ Melee.loadAssets = function()
     Melee.assets = {};
 
     var small_ship = new Melee.GameObjectModel();
-    small_ship.setSprite(sprites1_mat, 0, 0, 48, 60, 24, 40)
+    small_ship.addSprite(sprites1_mat, 0, 0, 48, 60, 24, 40)
     small_ship.mass = 60;
     small_ship.addShapeCircle(0, 4, 24);
     small_ship.rot_speed = 180 / 180 * Math.PI;
@@ -38,14 +38,15 @@ Melee.loadAssets = function()
     Melee.assets['Small ship'] = small_ship;
 
     var neptune = new Melee.GameObjectModel();
-    neptune.setSprite(sprites1_mat, 512, 0, 512, 512, 256, 256)
+    neptune.addSprite(sprites1_mat, 512, 0, 512, 512, 256, 256)
     neptune.mass = 10000;
     neptune.planet = true;
     neptune.addShapeCircle(0, 0, 256);
     Melee.assets['Neptune'] = neptune;
 
     var fire_dot = new Melee.GameObjectModel();
-    fire_dot.setSprite(sprites1_mat, 56, 0, 8, 8, 4, 4, true);
+    fire_dot.addSprite(sprites1_mat, 56, 0, 8, 8, 4, 4);
+    fire_dot.sprite_colored = true;
     fire_dot.life_time = 1;
     fire_dot.postRun = function(obj, delta, space)
     {
@@ -59,12 +60,12 @@ Melee.loadAssets = function()
             var green = Math.max(0, Math.min(1, 1 - (obj.age - 0.5) * 2))
             var blue = 0;
         }
-        obj.mesh.material.color = new THREE.Color(red, green, blue);
+        obj.sprite_color = new THREE.Color(red, green, blue);
     }
     Melee.assets['Fire dot'] = fire_dot;
 
     var bullet = new Melee.GameObjectModel();
-    bullet.setSprite(sprites1_mat, 56, 16, 8, 32, 4, 4)
+    bullet.addSprite(sprites1_mat, 56, 16, 8, 32, 4, 4)
     bullet.mass = 20;
     bullet.addShapeCircle(0, 0, 8);
     bullet.rotate_by_velocity = true;

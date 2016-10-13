@@ -82,11 +82,11 @@ Melee.Space.prototype.run = function(delta, important_objs, background)
     this.moveImportantObjectsCenter(important_objs, background);
 }
 
-Melee.Space.prototype.prepareForRendering = function()
+Melee.Space.prototype.prepareForRendering = function(delta)
 {
     for (var obj_i = 0; obj_i < this.objs.length; ++ obj_i) {
         var obj = this.objs[obj_i];
-        obj.prepareForRendering();
+        obj.prepareForRendering(delta);
     }
 }
 

@@ -35,7 +35,7 @@ Melee.render = function()
 
     Melee.showGameObjects(Melee.camera, ships, 200, background);
 
-    space.prepareForRendering();
+    space.prepareForRendering(delta);
 
     // Render background, game objects and GUI
     Melee.renderer.autoClear = true;
